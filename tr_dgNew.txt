@@ -1,0 +1,118 @@
+* Нужен гибкий код чтобы это можно было превратить с оффлайн андроид приложение в итоге.
+* чтобы можно было не индексируя и не храня в базе с помощью grep ripgrep или подобного брать из файлов, так как нужно иметь возможность быстро обновиться из гита суттацентрала, без обновлений базы и тп.
+* чтобы бекенд отдавал фронту серверным способом в datatables чтобы не вешать клиентскую часть гигантскими простынями если ответом много. 
+
+
+
+директории для поиска
+
+root тексты json
+/var/www/html/suttacentral.net/sc-data/sc_bilara_data/root/pli/ms
+
+англ и др переводы 
+
+#suttacentral translation json
+/var/www/html/suttacentral.net/sc-data/sc_bilara_data/translation
+cs  fi  id  ko   mr  pl  sl  vi   et  lo   ta  ..
+de  gu  hi  jpn  no  pt  si  th   es  kan  tr
+en  fr  lt  my   nl  sr  ru  gsw  it  zh   .
+
+#suttacentral translation plain html 
+root@o7i:/var/www/html/suttacentral.net/sc-data/html_text# ll
+af  cs  fi  haw  it   ko   mr   pt  san  sr   th   zh
+bn  de  fa  hi   id   la   nl   pl  si   sld  tr   zz
+ar  es  fr  hu   jpn  lzh  no   ro  sl   sv   vi   .
+ca  en  he  hr   kan  my   pgd  ru  sk   ta   xct  ..
+root@o7i:/var/www/html/suttacentral.net/sc-data/html_text# pwd
+/var/www/html/suttacentral.net/sc-data/html_text
+root@o7i:/var/www/html/suttacentral.net/sc-data/html_text# ll ru/
+pli  lzh  .  ..
+root@o7i:/var/www/html/suttacentral.net/sc-data/html_text# ll ru/pli/sutta/
+..  an  dn  kn  mn  .  sn
+root@o7i:/var/www/html/suttacentral.net/sc-data/html_text#
+
+
+
+#thebuddhaswords html
+root@o7i:/var/www/html/bw# ll
+whatsnew.txt  fonts       .    ud   last_update
+index.html    readme.txt  tha  mn   js
+kp            images      dhp  dn   sn
+kn            home        it   snp  an
+guide         css         vi   thi  ..
+root@o7i:/var/www/html/bw# pwd
+/var/www/html/bw
+
+русские переводы dhamma.gift json
+
+root@o7i:/var/www/html/assets/texts# cd ru/
+root@o7i:/var/www/html/assets/texts/ru# ll
+sutta  .  vinaya  ..
+root@o7i:/var/www/html/assets/texts/ru# pwd
+/var/www/html/assets/texts/ru
+
+#html если нужно определять названия сутт и тп
+/var/www/html/suttacentral.net/sc-data/sc_bilara_data/html
+
+
+Источники для поиска нужны:
+гибкий чтобы можно было выбирать an dn sn mn kn: iti, dhp, ud, snp, thag, thig
+
+пресет по умолчанию an dn sn mn kn: iti, dhp, ud, snp, thag, thig
+пресет 4 никаи an dn sn mn
+пресет 4+allKN и тп как ниже
+
+<div class="d-flex align-items-center flex-nowrap">
+    <select class="dropdown droponmain rounded-pill text-muted border-2 border-primary text-center flex-shrink-1" id="pOptions" name="p">
+        <option value="-kn"  >Pāḷi*</option>
+        <option value=""  >4 Никаи</option>
+        <option value="-vin"  >Виная*</option>
+        <option value="-all"  >+ вся КН</option>
+        <option value="-all -vin"  >+ Kd, Pvr</option>
+        <option value="-b"  >TBW</option>
+        <option value="-en"  >SC.net</option>
+        <option value="-tru"  >Theravada.ru</option>        
+    </select>
+
+    <div class="text-start text-muted form-check-inline me-0" data-bs-toggle="tooltip" id="texttype-help" style="cursor: pointer;" data-bs-placement="bottom" title="<strong>Pāḷi*</strong> - 4 Никаи + 6 книг КН Удана (Ud), Дхаммапада (Dhp), Итивутака (Iti), Суттанипата (Snp), Тхерагатха (Thag), Тхеригатха (Thig)<br><br>
+<strong>4 Никаи</strong> - 4 Основные Никаи: Ангутара Никаи (АН), Саньютта Никаи (СН), Маджжхима Никаи (МН), Дигха Никаи (ДН). В коренных текстах (Мула). <br><br>
+<strong>Виная*</strong> - Поиск в Вибхангах Винаи и Патимоккхах на Пали и Английском. <br><br>
+<strong>+ вся КН</strong> - 4 Никаи + поиск на Пали во всех книгах Кхуддака Никаи.<br><br>
+<strong>+ Kd, Pvr</strong> - Виная + Кхандхаки и Паривара<br><br>
+<strong>TBW</strong> - поиск в материалах theBuddhasWords.net<br><br>
+<strong>SC.net</strong> - поиск в англ переводах 4 никай SuttaCentral.net
+<br><br>
+<strong>Theravada.ru</strong> - поиск в русских переводах сайта theravada.ru">*</div>
+
+
+Режимы поиска:
+
+все совпадения - группировка по текстам - как в примере с kacchap_suttanta_pali_8-21.html
+Слова - группировка по словам
+
+Cравненния, метафоры - seyyathāpi.*{pattern},{pattern}.*adhivacan,  {pattern}.*seyyathāpi и другие патерны их много нужно заложить чтобы можно было добавлять как положительные кейсы, так и исключения
+    nonmetaphorkeys="подобного|подоба|condition|adhivacanasamphass|adhivacanapath|\banopam|\battūpa|\bnillopa|opamaññ"
+
+
+Определения - ko.*{pattern}? - тоже самое нужно чтобы можно было настроить шаблоны и добавить исключения в тч. И нужна логика если совпадений много, чтобы выдать самые весомые, если мало наоборот выдать все что похоже на определения. то что делают -def -defall но более современно
+
+
+    <select class="dropdown droponmain rounded-pill text-muted border-2 border-primary text-center flex-shrink-1" id="extraOptions" name="extra">
+        <option value="" selected >Все совпадения</option>
+        <option value="dictLookup"  >Словарь</option>
+        <option value="wordRep"  >Слова</option>
+        <option value="-def"  >Определения</option>
+        <option value="-sml"  >Сравнения</option>
+        <option value="-defall"  >Все определения</option>
+        <option value="-nm10"  >Топ-10</option>
+        <option value="-nm5"  >Топ-5</option>
+    </select>
+
+    <div class="text-muted text-decoration-none me-0 form-check-inline" data-bs-toggle="tooltip" id="searchtype-help" style="cursor: pointer;" data-bs-placement="bottom" title="<strong>По умолчанию</strong> - все совпадения сгруппированные по текстам<br><br>
+<strong>Словарь</strong> - искать слово в Dict.Dhamma.Gift<br><br>
+<strong>Слова</strong> - результаты сгруппированы по словам (работает только для Пали и 4 Никай)<br><br>
+    <strong>Определения</strong> - Поиск нескольких главных определений понятия на Пали в 4 Никаях. Что это, какие виды бывают, какими метафорами описывается. Работает только для определений данных стандартными фразами. <br><br>
+    <strong>Сравнения</strong> - Поиск сравнений, метафор, символов понятия на Пали в 4 Никаях. Работает только для определений данных стандартными фразами.<br><br>
+    <strong>Все определения</strong> - Поиск всех определений понятия. Логика описана в разделе помощи для Продвинутых.<br><br>
+        <strong>Топ-5 или 10</strong> - Быстрый поиск X текстов, где больше всего совпадений. Если не нужны все результаты.
+    ">*</div>
